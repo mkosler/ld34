@@ -5,9 +5,9 @@ window.init = () => {
 
   let plant = new Plant();
 
-  plant.debugImage('#ff0000');
-
   stage.addChild(plant);
 
-  stage.update();
+  createjs.Ticker.addEventListener('tick', (evt) => {
+    stage.update(evt);
+  });
 };
