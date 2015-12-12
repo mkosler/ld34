@@ -23,4 +23,15 @@ export default class extends createjs.Container {
 
     this.addChild(...this.fruits);
   }
+
+  checkWord(word) {
+    for (let [index, fruit] of this.fruits.entries()) {
+      if (fruit.word.text.toLowerCase() === word.toLowerCase()) {
+        this.removeChild(fruit);
+        this.fruits.splice(index, 1);
+
+        this.dispatchEvent('clearInput', true);
+      }
+    }
+  }
 }

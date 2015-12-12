@@ -13,7 +13,9 @@ export default class extends createjs.Container {
 
     this.countdown = this.originalTime = 5000;
 
-    this.on('tick', this.tickHandler.bind(this));
+    this.on('tick', this.onTick.bind(this));
+
+    this.on('removed', this.onRemoved.bind(this));
   }
 
   createFruitShape(color) {
@@ -34,12 +36,16 @@ export default class extends createjs.Container {
     return text;
   }
 
-  tickHandler(evt) {
+  onTick(evt) {
     this.countdown -= evt.delta; // evt.delta
 
     if (this.countdown < 0) {
       evt.remove();
     }
+  }
+
+  onRemoved(evt) {
+    this.removeAllEventListeners();
   }
 
   getRandom(min, max) {
