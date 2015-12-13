@@ -46,6 +46,8 @@ var _class = (function (_createjs$Container) {
 
     _this.countdown = _this.originalTime = _this.getRandom(2000, 6000);
 
+    _this.setTimerColor(_this.countdown);
+
     createjs.Tween.get(_this, {
       onChange: _this.updateArcTimer.bind(_this)
     }).to({ countdown: 0 }, _this.originalTime).call(_this.splat.bind(_this));
@@ -59,7 +61,7 @@ var _class = (function (_createjs$Container) {
     value: function createArcTimer() {
       var arc = new createjs.Shape();
 
-      arc.graphics.setStrokeStyle(3).beginStroke('#ff7c1f').arc(0, 0, 30, 0, Math.PI * 2);
+      arc.graphics.setStrokeStyle(3).beginStroke(this.arcTimerColor).arc(0, 0, 30, 0, Math.PI * 2);
 
       return arc;
     }
@@ -70,7 +72,7 @@ var _class = (function (_createjs$Container) {
 
       this.arcTimerShape.graphics.clear();
 
-      this.arcTimerShape.graphics.setStrokeStyle(15).beginStroke('#ff7c1f').arc(0, 0, 30, 0, Math.PI * 2 * percent);
+      this.arcTimerShape.graphics.setStrokeStyle(15).beginStroke(this.arcTimerColor).arc(0, 0, 30, 0, Math.PI * 2 * percent);
     }
   }, {
     key: 'createWord',
@@ -100,6 +102,19 @@ var _class = (function (_createjs$Container) {
       return this.countdown / this.originalTime;
     }
   }, {
+    key: 'setTimerColor',
+    value: function setTimerColor(countdown) {
+      if (countdown >= 5000) {
+        this.arcTimerColor = '#bae4f0';
+      } else if (countdown >= 4000) {
+        this.arcTimerColor = '#baef40';
+      } else if (countdown >= 3000) {
+        this.arcTimerColor = '#fa7c1f';
+      } else {
+        this.arcTimerColor = '#ff2400';
+      }
+    }
+  }, {
     key: 'splat',
     value: function splat() {
       this.fruitSplatBitmap.visible = true;
@@ -108,7 +123,7 @@ var _class = (function (_createjs$Container) {
 
       this.splatted = true;
 
-      createjs.Sound.play('splatSnd');
+      createjs.Sound.play('splat');
 
       var splatEvent = new createjs.Event('splat', true);
       this.dispatchEvent(splatEvent);
@@ -308,7 +323,7 @@ var _class = (function (_createjs$Container) {
       this.removeChild(fruit);
       this.fruits.splice(index, 1);
 
-      createjs.Tween.get(this).wait(this.getRandom(1000, 7000)).call(this.spawnFruit.bind(this));
+      createjs.Tween.get(this).wait(this.getRandom(1000, 5000)).call(this.spawnFruit.bind(this));
     }
   }, {
     key: 'getRandom',
