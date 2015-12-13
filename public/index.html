@@ -2,12 +2,19 @@
 <html>
 <head>
     <title>LD34 - Growing</title>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://code.createjs.com/createjs-2015.11.26.combined.js"></script>
     <script src="./build.js"></script>
+    <style>
+#game {
+  max-width: 100%;
+  height: auto;
+}
+    </style>
 </head>
 <body onload="init();">
-    <canvas id="game" width="640" height="480"></canvas>
-    <br/>
     <input id="wordInput" type="text">
+    <b>Score: <span id="score">0</span>
+    <canvas id="game" width="1920" height="900"></canvas>
 </body>
 </html>

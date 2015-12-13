@@ -16,7 +16,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var _class = (function (_createjs$Container) {
   _inherits(_class, _createjs$Container);
 
-  function _class(x, y, color, text) {
+  function _class(x, y, color, text, distanceToGround) {
     _classCallCheck(this, _class);
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this));
@@ -24,27 +24,27 @@ var _class = (function (_createjs$Container) {
     _this.x = x;
     _this.y = y;
 
-    _this.fruitBitmap = new createjs.Bitmap('tomato.png');
+    _this.fruitBitmap = new createjs.Bitmap('tomato.svg');
     _this.fruitBitmap.x = _this.fruitBitmap.y = 0;
     _this.addChild(_this.fruitBitmap);
 
-    _this.fruitSplatBitmap = new createjs.Bitmap('splat.png');
-    _this.fruitSplatBitmap.x = -50;
-    _this.fruitSplatBitmap.y = 200;
+    _this.fruitSplatBitmap = new createjs.Bitmap('splat.svg');
+    _this.fruitSplatBitmap.x = 0;
+    _this.fruitSplatBitmap.y = distanceToGround - 228;
     _this.fruitSplatBitmap.visible = false;
     _this.addChild(_this.fruitSplatBitmap);
 
     _this.arcTimerShape = _this.createArcTimer();
-    _this.arcTimerShape.x = 100;
+    _this.arcTimerShape.x = 250;
     _this.arcTimerShape.y = 10;
     _this.addChild(_this.arcTimerShape);
 
     _this.word = _this.createWord(text);
-    _this.word.x = 27;
+    _this.word.x = 30;
     _this.word.y = 45;
     _this.addChild(_this.word);
 
-    _this.countdown = _this.originalTime = 5000;
+    _this.countdown = _this.originalTime = _this.getRandom(2000, 6000);
 
     createjs.Tween.get(_this, {
       onChange: _this.updateArcTimer.bind(_this)
@@ -59,7 +59,7 @@ var _class = (function (_createjs$Container) {
     value: function createArcTimer() {
       var arc = new createjs.Shape();
 
-      arc.graphics.setStrokeStyle(3).beginStroke('#000000').arc(0, 0, 5, 0, Math.PI * 2);
+      arc.graphics.setStrokeStyle(3).beginStroke('#ff7c1f').arc(0, 0, 30, 0, Math.PI * 2);
 
       return arc;
     }
@@ -70,7 +70,7 @@ var _class = (function (_createjs$Container) {
 
       this.arcTimerShape.graphics.clear();
 
-      this.arcTimerShape.graphics.setStrokeStyle(3).beginStroke('#000000').arc(0, 0, 5, 0, Math.PI * 2 * percent);
+      this.arcTimerShape.graphics.setStrokeStyle(15).beginStroke('#ff7c1f').arc(0, 0, 30, 0, Math.PI * 2 * percent);
     }
   }, {
     key: 'createWord',
@@ -78,7 +78,7 @@ var _class = (function (_createjs$Container) {
       var text = new createjs.Text();
       text.text = word;
       text.color = '#000000';
-      text.font = 'bold 36px Arial';
+      text.font = 'bold 90px Arial';
 
       return text;
     }
@@ -107,7 +107,7 @@ var _class = (function (_createjs$Container) {
 
       this.splatted = true;
 
-      createjs.Sound.play('splat');
+      createjs.Sound.play('splatSnd');
 
       var splatEvent = new createjs.Event('splat', true);
       this.dispatchEvent(splatEvent);
@@ -129,51 +129,65 @@ var _plant2 = _interopRequireDefault(_plant);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.init = function () {
-  var stage = new createjs.Stage('game');
+    $.getJSON('wordlist.json', function (wordlist) {
+        var stage = new createjs.Stage('game');
 
-  var plants = [new _plant2.default()];
+        var hatchHeight = 835;
 
-  stage.addChild.apply(stage, plants);
+        var hatch = new createjs.Bitmap('hatch.svg');
+        stage.addChild(hatch);
 
-  var wordInput = document.getElementById('wordInput');
-  wordInput.focus(); // starts user at word input on page load
-  wordInput.addEventListener('change', function (evt) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+        var plants = [new _plant2.default(125, 225, hatchHeight - 75, wordlist), new _plant2.default(850, 75, hatchHeight + 120, wordlist), new _plant2.default(450, 223, hatchHeight - 50, wordlist), new _plant2.default(1325, 400, hatchHeight - 300, wordlist)];
 
-    try {
-      for (var _iterator = plants[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var plant = _step.value;
+        stage.addChild.apply(stage, plants);
 
-        plant.checkWord(evt.target.value);
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-  });
+        var wordInput = document.getElementById('wordInput');
+        wordInput.focus(); // starts user at word input on page load
+        wordInput.addEventListener('change', function (evt) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
 
-  stage.on('clearInput', function () {
-    wordInput.value = '';
-  });
+            try {
+                for (var _iterator = plants[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var plant = _step.value;
 
-  createjs.Sound.registerSound('splat.mp3', 'splat');
-  createjs.Sound.registerSound('correct.mp3', 'correct');
+                    plant.checkWord(evt.target.value);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
 
-  createjs.Ticker.addEventListener('tick', function (evt) {
-    stage.update(evt);
-  });
+            evt.target.value = '';
+        });
+
+        stage.on('clearInput', function () {
+            wordInput.value = '';
+        });
+
+        stage.on('success', function () {
+            var score = parseInt($('#score').html());
+            $('#score').html(score + 1);
+        });
+
+        createjs.Sound.registerSound('splat.mp3', 'splat');
+        createjs.Sound.registerSound('correct.mp3', 'correct');
+
+        createjs.Ticker.addEventListener('tick', function (evt) {
+            stage.update(evt);
+        });
+    });
 };
 
 },{"./plant":3}],3:[function(require,module,exports){
@@ -207,22 +221,23 @@ var _class = (function (_createjs$Container) {
   function _class() {
     var x = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
     var y = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+    var distanceToGround = arguments[2];
+    var wordlist = arguments[3];
 
     _classCallCheck(this, _class);
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this));
 
+    _this.distanceToGround = distanceToGround;
+
+    _this.wordlist = wordlist;
+
     _this.x = x;
     _this.y = y;
 
-    _this.plantBitmap = new createjs.Bitmap('vine.png');
-    _this.addChild(_this.plantBitmap);
-
     _this.fruits = [];
 
-    _this.fruits.push(new _fruit2.default(130, 180, '#00ff00', 'Foo'));
-
-    _this.addChild.apply(_this, _toConsumableArray(_this.fruits));
+    _this.spawnFruit();
 
     _this.on('splat', _this.onSplat.bind(_this));
 
@@ -247,9 +262,9 @@ var _class = (function (_createjs$Container) {
           if (fruit.word.text.toLowerCase() === word.toLowerCase() && !fruit.splatted) {
             createjs.Sound.play('correct');
 
-            this.removeChild(fruit);
-            this.fruits.splice(index, 1);
+            this.removeFruit(fruit, index);
 
+            this.dispatchEvent('success', true);
             this.dispatchEvent('clearInput', true);
           }
         }
@@ -273,6 +288,24 @@ var _class = (function (_createjs$Container) {
     value: function removeFruit(fruit, index) {
       this.removeChild(fruit);
       this.fruits.splice(index, 1);
+
+      createjs.Tween.get(this).wait(this.getRandom(1000, 7000)).call(this.spawnFruit.bind(this));
+    }
+  }, {
+    key: 'getRandom',
+    value: function getRandom(min, max) {
+      return Math.floor(Math.random() * (max - min) + min);
+    }
+  }, {
+    key: 'spawnFruit',
+    value: function spawnFruit() {
+      this.fruits.push(new _fruit2.default(0, 0, '#00ff00', this.getNextWord(), this.distanceToGround));
+      this.addChild.apply(this, _toConsumableArray(this.fruits));
+    }
+  }, {
+    key: 'getNextWord',
+    value: function getNextWord() {
+      return this.wordlist[this.getRandom(0, this.wordlist.length - 1)];
     }
   }, {
     key: 'onSplat',

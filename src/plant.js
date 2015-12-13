@@ -1,20 +1,19 @@
 import Fruit from './fruit';
 
 export default class extends createjs.Container {
-  constructor(x = 0, y = 0) {
+  constructor(x = 0, y = 0, distanceToGround, wordlist) {
     super();
+
+    this.distanceToGround = distanceToGround;
+
+    this.wordlist = wordlist;
 
     this.x = x;
     this.y = y;
 
-    this.plantBitmap = new createjs.Bitmap('vine.png');
-    this.addChild(this.plantBitmap);
-
     this.fruits = [];
 
-    this.fruits.push(new Fruit(130, 180, '#00ff00', 'Foo'));
-
-    this.addChild(...this.fruits);
+    this.spawnFruit();
 
     this.on('splat', this.onSplat.bind(this));
 
@@ -23,12 +22,13 @@ export default class extends createjs.Container {
 
   checkWord(word) {
     for (let [index, fruit] of this.fruits.entries()) {
-      if (fruit.word.text.toLowerCase() === word.toLowerCase() && !fruit.splatted) {
+      if (fruit.word.text.toLowerCase() === word.toLowerCase() &&
+          !fruit.splatted) {
         createjs.Sound.play('correct');
 
-        this.removeChild(fruit);
-        this.fruits.splice(index, 1);
+        this.removeFruit(fruit, index);
 
+        this.dispatchEvent('success', true);
         this.dispatchEvent('clearInput', true);
       }
     }
@@ -37,6 +37,23 @@ export default class extends createjs.Container {
   removeFruit(fruit, index) {
     this.removeChild(fruit);
     this.fruits.splice(index, 1);
+
+    createjs.Tween.get(this)
+      .wait(this.getRandom(1000, 7000))
+      .call(this.spawnFruit.bind(this));
+  }
+
+  getRandom(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
+
+  spawnFruit() {
+    this.fruits.push(new Fruit(0, 0, '#00ff00', this.getNextWord(), this.distanceToGround));
+    this.addChild(...this.fruits);
+  }
+
+  getNextWord() {
+    return this.wordlist[this.getRandom(0, this.wordlist.length - 1)];
   }
 
   onSplat(evt) {

@@ -1,31 +1,31 @@
 export default class extends createjs.Container {
-  constructor(x, y, color, text) {
+  constructor(x, y, color, text, distanceToGround) {
     super();
 
     this.x = x;
     this.y = y;
 
-    this.fruitBitmap = new createjs.Bitmap('tomato.png');
+    this.fruitBitmap = new createjs.Bitmap('tomato.svg');
     this.fruitBitmap.x = this.fruitBitmap.y = 0;
     this.addChild(this.fruitBitmap);
 
-    this.fruitSplatBitmap = new createjs.Bitmap('splat.png');
-    this.fruitSplatBitmap.x = -50;
-    this.fruitSplatBitmap.y = 200;
+    this.fruitSplatBitmap = new createjs.Bitmap('splat.svg');
+    this.fruitSplatBitmap.x = 0;
+    this.fruitSplatBitmap.y = distanceToGround - 228;
     this.fruitSplatBitmap.visible = false;
     this.addChild(this.fruitSplatBitmap);
 
     this.arcTimerShape = this.createArcTimer();
-    this.arcTimerShape.x = 100;
+    this.arcTimerShape.x = 250;
     this.arcTimerShape.y = 10;
     this.addChild(this.arcTimerShape);
 
     this.word = this.createWord(text);
-    this.word.x = 27;
+    this.word.x = 30;
     this.word.y = 45;
     this.addChild(this.word);
 
-    this.countdown = this.originalTime = 5000;
+    this.countdown = this.originalTime = this.getRandom(2000, 6000);
 
     createjs.Tween.get(this, {
       onChange: this.updateArcTimer.bind(this)
@@ -39,8 +39,8 @@ export default class extends createjs.Container {
     let arc = new createjs.Shape();
 
     arc.graphics.setStrokeStyle(3)
-      .beginStroke('#000000')
-      .arc(0, 0, 5, 0, Math.PI * 2);
+      .beginStroke('#ff7c1f')
+      .arc(0, 0, 30, 0, Math.PI * 2);
 
     return arc;
   }
@@ -50,16 +50,16 @@ export default class extends createjs.Container {
 
     this.arcTimerShape.graphics.clear();
 
-    this.arcTimerShape.graphics.setStrokeStyle(3)
-      .beginStroke('#000000')
-      .arc(0, 0, 5, 0, Math.PI * 2 * percent);
+    this.arcTimerShape.graphics.setStrokeStyle(15)
+      .beginStroke('#ff7c1f')
+      .arc(0, 0, 30, 0, Math.PI * 2 * percent);
   }
 
   createWord(word) {
     let text = new createjs.Text();
     text.text = word;
     text.color = '#000000';
-    text.font = 'bold 36px Arial';
+    text.font = 'bold 90px Arial';
 
     return text;
   }
@@ -84,7 +84,7 @@ export default class extends createjs.Container {
 
     this.splatted = true;
 
-    createjs.Sound.play('splat');
+    createjs.Sound.play('splatSnd');
 
     let splatEvent = new createjs.Event('splat', true);
     this.dispatchEvent(splatEvent);
