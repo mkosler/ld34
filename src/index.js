@@ -4,10 +4,12 @@ window.init = () => {
   $.getJSON('wordlist.json', (wordlist) => {
     let stage = new createjs.Stage('game');
 
+    let playScene = new createjs.Container();
+
     let hatchHeight = 835;
 
     let hatch = new createjs.Bitmap('hatch.svg');
-    stage.addChild(hatch);
+    playScene.addChild(hatch);
 
     let plants = [
       new Plant(125, 225, hatchHeight - 75, wordlist),
@@ -16,7 +18,7 @@ window.init = () => {
       new Plant(1325, 400, hatchHeight - 300, wordlist)
     ];
 
-    stage.addChild(...plants);
+    playScene.addChild(...plants);
 
     let wordInput = document.getElementById('wordInput');
     wordInput.focus(); // starts user at word input on page load
@@ -28,11 +30,11 @@ window.init = () => {
       evt.target.value = '';
     });
 
-    stage.on('clearInput', () => {
+    playScene.on('clearInput', () => {
       wordInput.value = '';
     });
 
-    stage.on('success', () => {
+    playScene.on('success', () => {
       let score = parseInt($('#score').html());
       $('#score').html(score + 1);
     });
@@ -52,6 +54,8 @@ window.init = () => {
 
     createjs.Sound.registerSound('splat.mp3', 'splat');
     createjs.Sound.registerSound('correct.mp3', 'correct');
+
+    stage.addChild(playScene);
 
     createjs.Ticker.addEventListener('tick', (evt) => {
       stage.update(evt);

@@ -21,8 +21,8 @@ export default class extends createjs.Container {
     this.addChild(this.arcTimerShape);
 
     this.word = this.createWord(text);
-    this.word.x = 30;
-    this.word.y = 45;
+    this.word.x = 133;
+    this.word.y = 100;
     this.addChild(this.word);
 
     this.countdown = this.originalTime = this.getRandom(2000, 6000);
@@ -59,7 +59,8 @@ export default class extends createjs.Container {
     let text = new createjs.Text();
     text.text = word;
     text.color = '#000000';
-    text.font = 'bold 90px Arial';
+    text.font = 'bold 55px rustic';
+    text.textAlign = 'center';
 
     return text;
   }
