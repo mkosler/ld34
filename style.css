@@ -1,0 +1,62 @@
+@font-face {
+  font-family: rustic;
+  src: url(DryGulchFLF.ttf);
+}
+
+body {
+  background-color: #7dbd3f;
+  font-family: rustic;
+}
+
+.game canvas {
+  width: 100%;
+  height: auto;
+}
+
+.game img {
+  width: 100%;
+  height: 150px;
+}
+
+/*div.center {*/
+  /*text-align: center;*/
+/*}*/
+
+.padded {
+  margin: 10px;
+}
+
+.game {
+  width: 75%;
+  min-width: 600px;
+  height: auto;
+  padding: 0;
+  margin: auto;
+  display: block;
+  position: relative;
+}
+
+#overlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+input[type=text] {
+  border: 0px;
+  background-color: rgba(255,255,255,0.2);
+  font-size: 36px;
+}
+
+#scoreDiv {
+  padding-top: 20px;
+  font-size: 36px;
+}
+
+#timerDiv {
+  float: right;
+  position: absolute;
+  right: 10px;
+  top: 20px;
+  font-size: 72px;
+}

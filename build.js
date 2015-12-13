@@ -40,8 +40,8 @@ var _class = (function (_createjs$Container) {
     _this.addChild(_this.arcTimerShape);
 
     _this.word = _this.createWord(text);
-    _this.word.x = 30;
-    _this.word.y = 45;
+    _this.word.x = 133;
+    _this.word.y = 100;
     _this.addChild(_this.word);
 
     _this.countdown = _this.originalTime = _this.getRandom(2000, 6000);
@@ -78,7 +78,8 @@ var _class = (function (_createjs$Container) {
       var text = new createjs.Text();
       text.text = word;
       text.color = '#000000';
-      text.font = 'bold 90px Arial';
+      text.font = 'bold 55px rustic';
+      text.textAlign = 'center';
 
       return text;
     }
@@ -129,79 +130,83 @@ var _plant2 = _interopRequireDefault(_plant);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.init = function () {
-  $.getJSON('wordlist.json', function (wordlist) {
-    var stage = new createjs.Stage('game');
+    $.getJSON('wordlist.json', function (wordlist) {
+        var stage = new createjs.Stage('game');
 
-    var hatchHeight = 835;
+        var playScene = new createjs.Container();
 
-    var hatch = new createjs.Bitmap('hatch.svg');
-    stage.addChild(hatch);
+        var hatchHeight = 835;
 
-    var plants = [new _plant2.default(125, 225, hatchHeight - 75, wordlist), new _plant2.default(850, 75, hatchHeight + 120, wordlist), new _plant2.default(450, 223, hatchHeight - 50, wordlist), new _plant2.default(1325, 400, hatchHeight - 300, wordlist)];
+        var hatch = new createjs.Bitmap('hatch.svg');
+        playScene.addChild(hatch);
 
-    stage.addChild.apply(stage, plants);
+        var plants = [new _plant2.default(125, 225, hatchHeight - 75, wordlist), new _plant2.default(850, 75, hatchHeight + 120, wordlist), new _plant2.default(450, 223, hatchHeight - 50, wordlist), new _plant2.default(1325, 400, hatchHeight - 300, wordlist)];
 
-    var wordInput = document.getElementById('wordInput');
-    wordInput.focus(); // starts user at word input on page load
-    wordInput.addEventListener('change', function (evt) {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+        playScene.addChild.apply(playScene, plants);
 
-      try {
-        for (var _iterator = plants[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var plant = _step.value;
+        var wordInput = document.getElementById('wordInput');
+        wordInput.focus(); // starts user at word input on page load
+        wordInput.addEventListener('change', function (evt) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
 
-          plant.checkWord(evt.target.value);
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
+            try {
+                for (var _iterator = plants[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var plant = _step.value;
 
-      evt.target.value = '';
+                    plant.checkWord(evt.target.value);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            evt.target.value = '';
+        });
+
+        playScene.on('clearInput', function () {
+            wordInput.value = '';
+        });
+
+        playScene.on('success', function () {
+            var score = parseInt($('#score').html());
+            $('#score').html(score + 1);
+        });
+
+        var gameTimer = { time: 60000 }; // one minute
+
+        createjs.Tween.get(gameTimer, {
+            onChange: function onChange() {
+                var pad = function pad(n) {
+                    return n < 10 ? '0' + n : n;
+                };
+                var timerDate = new Date(gameTimer.time);
+                $('#timer').html(pad(timerDate.getMinutes()) + ':' + pad(timerDate.getSeconds()));
+            }
+        }).to({ time: 0 }, gameTimer.time).call(function () {
+            createjs.Tween.removeAllTweens();
+        });
+
+        createjs.Sound.registerSound('splat.mp3', 'splat');
+        createjs.Sound.registerSound('correct.mp3', 'correct');
+
+        stage.addChild(playScene);
+
+        createjs.Ticker.addEventListener('tick', function (evt) {
+            stage.update(evt);
+        });
     });
-
-    stage.on('clearInput', function () {
-      wordInput.value = '';
-    });
-
-    stage.on('success', function () {
-      var score = parseInt($('#score').html());
-      $('#score').html(score + 1);
-    });
-
-    var gameTimer = { time: 60000 }; // one minute
-
-    createjs.Tween.get(gameTimer, {
-      onChange: function onChange() {
-        var pad = function pad(n) {
-          return n < 10 ? '0' + n : n;
-        };
-        var timerDate = new Date(gameTimer.time);
-        $('#timer').html(pad(timerDate.getMinutes()) + ':' + pad(timerDate.getSeconds()));
-      }
-    }).to({ time: 0 }, gameTimer.time).call(function () {
-      createjs.Tween.removeAllTweens();
-    });
-
-    createjs.Sound.registerSound('splat.mp3', 'splat');
-    createjs.Sound.registerSound('correct.mp3', 'correct');
-
-    createjs.Ticker.addEventListener('tick', function (evt) {
-      stage.update(evt);
-    });
-  });
 };
 
 },{"./plant":3}],3:[function(require,module,exports){

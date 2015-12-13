@@ -2,20 +2,28 @@
 <html>
 <head>
     <title>LD34 - Growing</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://code.createjs.com/createjs-2015.11.26.combined.js"></script>
     <script src="./build.js"></script>
-    <style>
-#game {
-  max-width: 100%;
-  height: auto;
-}
-    </style>
 </head>
 <body onload="init();">
-    <input id="wordInput" type="text">
-    <b>Score: <span id="score">0</span></b>
-    <b>Time left: <span id="timer"></span></b>
-    <canvas id="game" width="1920" height="900"></canvas>
+  <div class="game">
+    <div>
+      <div id="timerDiv">
+        <b><span id="timer"></span></b>
+      </div>
+      <img src="panel.png" alt="panel" />
+      <div class="center padded" id="overlay">
+        <input id="wordInput" type="text">
+        <div id="scoreDiv">
+          <b>Score: <span id="score">0</span></b>
+        </div>
+      </div>
+    </div>
+    <div>
+      <canvas id="game" width="1920" height="900"></canvas>
+    </div>
+  </div>
 </body>
 </html>
