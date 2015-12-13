@@ -129,65 +129,79 @@ var _plant2 = _interopRequireDefault(_plant);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.init = function () {
-    $.getJSON('wordlist.json', function (wordlist) {
-        var stage = new createjs.Stage('game');
+  $.getJSON('wordlist.json', function (wordlist) {
+    var stage = new createjs.Stage('game');
 
-        var hatchHeight = 835;
+    var hatchHeight = 835;
 
-        var hatch = new createjs.Bitmap('hatch.svg');
-        stage.addChild(hatch);
+    var hatch = new createjs.Bitmap('hatch.svg');
+    stage.addChild(hatch);
 
-        var plants = [new _plant2.default(125, 225, hatchHeight - 75, wordlist), new _plant2.default(850, 75, hatchHeight + 120, wordlist), new _plant2.default(450, 223, hatchHeight - 50, wordlist), new _plant2.default(1325, 400, hatchHeight - 300, wordlist)];
+    var plants = [new _plant2.default(125, 225, hatchHeight - 75, wordlist), new _plant2.default(850, 75, hatchHeight + 120, wordlist), new _plant2.default(450, 223, hatchHeight - 50, wordlist), new _plant2.default(1325, 400, hatchHeight - 300, wordlist)];
 
-        stage.addChild.apply(stage, plants);
+    stage.addChild.apply(stage, plants);
 
-        var wordInput = document.getElementById('wordInput');
-        wordInput.focus(); // starts user at word input on page load
-        wordInput.addEventListener('change', function (evt) {
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+    var wordInput = document.getElementById('wordInput');
+    wordInput.focus(); // starts user at word input on page load
+    wordInput.addEventListener('change', function (evt) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-            try {
-                for (var _iterator = plants[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var plant = _step.value;
+      try {
+        for (var _iterator = plants[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var plant = _step.value;
 
-                    plant.checkWord(evt.target.value);
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
+          plant.checkWord(evt.target.value);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
 
-            evt.target.value = '';
-        });
-
-        stage.on('clearInput', function () {
-            wordInput.value = '';
-        });
-
-        stage.on('success', function () {
-            var score = parseInt($('#score').html());
-            $('#score').html(score + 1);
-        });
-
-        createjs.Sound.registerSound('splat.mp3', 'splat');
-        createjs.Sound.registerSound('correct.mp3', 'correct');
-
-        createjs.Ticker.addEventListener('tick', function (evt) {
-            stage.update(evt);
-        });
+      evt.target.value = '';
     });
+
+    stage.on('clearInput', function () {
+      wordInput.value = '';
+    });
+
+    stage.on('success', function () {
+      var score = parseInt($('#score').html());
+      $('#score').html(score + 1);
+    });
+
+    var gameTimer = { time: 60000 }; // one minute
+
+    createjs.Tween.get(gameTimer, {
+      onChange: function onChange() {
+        var pad = function pad(n) {
+          return n < 10 ? '0' + n : n;
+        };
+        var timerDate = new Date(gameTimer.time);
+        $('#timer').html(pad(timerDate.getMinutes()) + ':' + pad(timerDate.getSeconds()));
+      }
+    }).to({ time: 0 }, gameTimer.time).call(function () {
+      createjs.Tween.removeAllTweens();
+    });
+
+    createjs.Sound.registerSound('splat.mp3', 'splat');
+    createjs.Sound.registerSound('correct.mp3', 'correct');
+
+    createjs.Ticker.addEventListener('tick', function (evt) {
+      stage.update(evt);
+    });
+  });
 };
 
 },{"./plant":3}],3:[function(require,module,exports){

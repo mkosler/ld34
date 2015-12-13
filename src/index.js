@@ -37,6 +37,19 @@ window.init = () => {
       $('#score').html(score + 1);
     });
 
+    let gameTimer = {time: 60000}; // one minute
+
+    createjs.Tween.get(gameTimer, {
+      onChange: () => {
+        let pad = (n) => n < 10 ? '0' + n : n;
+        let timerDate = new Date(gameTimer.time);
+        $('#timer').html(`${pad(timerDate.getMinutes())}:${pad(timerDate.getSeconds())}`);
+      }
+    }).to({time: 0}, gameTimer.time)
+      .call(() => {
+        createjs.Tween.removeAllTweens();
+      });
+
     createjs.Sound.registerSound('splat.mp3', 'splat');
     createjs.Sound.registerSound('correct.mp3', 'correct');
 
