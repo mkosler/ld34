@@ -18,9 +18,27 @@ body {
   height: 150px;
 }
 
-/*div.center {*/
-  /*text-align: center;*/
-/*}*/
+.title {
+  font-size: 80px;
+  text-shadow: 5px 5px 0px #eee, 7px 7px 0px #707070;
+  position: absolute;
+  top: -30px;
+  left: 40%;
+}
+
+@media screen and (max-width: 1600px) {
+  .title {
+    font-size: 60px;
+    top: 30px;
+    left: 30%;
+  }
+}
+
+@media screen and (max-width: 1060px) {
+  .title {
+    visibility: hidden;
+  }
+}
 
 .padded {
   margin: 10px;
@@ -59,4 +77,13 @@ input[type=text] {
   right: 10px;
   top: 20px;
   font-size: 72px;
+}
+
+@media screen and (max-width: 950px) {
+  #timerDiv {
+    font-size: 36px;
+    position: absolute;
+    top: 75px;
+    left: 350px;
+  }
 }
