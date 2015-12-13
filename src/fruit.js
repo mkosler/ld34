@@ -27,6 +27,8 @@ export default class extends createjs.Container {
 
     this.countdown = this.originalTime = this.getRandom(2000, 6000);
 
+    this.setTimerColor(this.countdown);
+
     createjs.Tween.get(this, {
       onChange: this.updateArcTimer.bind(this)
     }).to({countdown: 0}, this.originalTime)
@@ -39,7 +41,7 @@ export default class extends createjs.Container {
     let arc = new createjs.Shape();
 
     arc.graphics.setStrokeStyle(3)
-      .beginStroke('#ff7c1f')
+      .beginStroke(this.arcTimerColor)
       .arc(0, 0, 30, 0, Math.PI * 2);
 
     return arc;
@@ -51,7 +53,7 @@ export default class extends createjs.Container {
     this.arcTimerShape.graphics.clear();
 
     this.arcTimerShape.graphics.setStrokeStyle(15)
-      .beginStroke('#ff7c1f')
+      .beginStroke(this.arcTimerColor)
       .arc(0, 0, 30, 0, Math.PI * 2 * percent);
   }
 
@@ -78,6 +80,18 @@ export default class extends createjs.Container {
     return this.countdown / this.originalTime;
   }
 
+  setTimerColor(countdown) {
+    if (countdown >= 5000) {
+      this.arcTimerColor = '#bae4f0';
+    } else if  (countdown >= 4000) {
+      this.arcTimerColor = '#baef40';
+    } else if (countdown >= 3000) {
+      this.arcTimerColor = '#fa7c1f';
+    } else {
+      this.arcTimerColor = '#ff2400';
+    }
+  }
+
   splat() {
     this.fruitSplatBitmap.visible = true;
     this.word.visible = false;
@@ -85,7 +99,7 @@ export default class extends createjs.Container {
 
     this.splatted = true;
 
-    createjs.Sound.play('splatSnd');
+    createjs.Sound.play('splat');
 
     let splatEvent = new createjs.Event('splat', true);
     this.dispatchEvent(splatEvent);

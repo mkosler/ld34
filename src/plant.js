@@ -39,7 +39,7 @@ export default class extends createjs.Container {
     this.fruits.splice(index, 1);
 
     createjs.Tween.get(this)
-      .wait(this.getRandom(1000, 7000))
+      .wait(this.getRandom(1000, 5000))
       .call(this.spawnFruit.bind(this));
   }
 
