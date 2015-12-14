@@ -22,13 +22,16 @@ window.init = () => {
 
     let wordInput = document.getElementById('wordInput');
     wordInput.focus(); // starts user at word input on page load
-    wordInput.addEventListener('change', (evt) => {
+
+    let changeEvent = (evt) => {
       for (let plant of plants) {
         plant.checkWord(evt.target.value);
       }
 
       evt.target.value = '';
-    });
+    };
+
+    wordInput.addEventListener('change', changeEvent);
 
     playScene.on('clearInput', () => {
       wordInput.value = '';
@@ -45,11 +48,13 @@ window.init = () => {
       onChange: () => {
         let pad = (n) => n < 10 ? '0' + n : n;
         let timerDate = new Date(gameTimer.time);
-        $('#timer').html(`${pad(timerDate.getMinutes())}:${pad(timerDate.getSeconds())}`);
+        $('#timer').html(
+          `${pad(timerDate.getMinutes())}:${pad(timerDate.getSeconds())}`);
       }
     }).to({time: 0}, gameTimer.time)
       .call(() => {
         createjs.Tween.removeAllTweens();
+        wordInput.removeEventListener('change', changeEvent);
       });
 
     createjs.Sound.registerSound('splat.mp3', 'splat');

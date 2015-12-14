@@ -83,7 +83,7 @@ export default class extends createjs.Container {
   setTimerColor(countdown) {
     if (countdown >= 5000) {
       this.arcTimerColor = '#bae4f0';
-    } else if  (countdown >= 4000) {
+    } else if (countdown >= 4000) {
       this.arcTimerColor = '#baef40';
     } else if (countdown >= 3000) {
       this.arcTimerColor = '#fa7c1f';

@@ -48,7 +48,8 @@ export default class extends createjs.Container {
   }
 
   spawnFruit() {
-    this.fruits.push(new Fruit(0, 0, '#00ff00', this.getNextWord(), this.distanceToGround));
+    this.fruits.push(
+        new Fruit(0, 0, '#00ff00', this.getNextWord(), this.distanceToGround));
     this.addChild(...this.fruits);
   }
 
