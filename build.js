@@ -161,7 +161,8 @@ window.init = function () {
 
         var wordInput = document.getElementById('wordInput');
         wordInput.focus(); // starts user at word input on page load
-        wordInput.addEventListener('change', function (evt) {
+
+        var changeEvent = function changeEvent(evt) {
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -188,7 +189,9 @@ window.init = function () {
             }
 
             evt.target.value = '';
-        });
+        };
+
+        wordInput.addEventListener('change', changeEvent);
 
         playScene.on('clearInput', function () {
             wordInput.value = '';
@@ -211,6 +214,7 @@ window.init = function () {
             }
         }).to({ time: 0 }, gameTimer.time).call(function () {
             createjs.Tween.removeAllTweens();
+            wordInput.removeEventListener('change', changeEvent);
         });
 
         createjs.Sound.registerSound('splat.mp3', 'splat');
